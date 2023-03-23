@@ -1,19 +1,13 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import './assets/styles/app.css';
 import './assets/styles/app.scss';
 
+// import react router dom
+import { RouterProvider } from 'react-router-dom';
+import router from './routes';
+
 const App: FC = () => {
-  const [fullname, setFullname] = useState('Dư Thanh Được');
-  useEffect(() => {
-    setFullname('Phuc');
-  }, []);
-  console.log(fullname);
-  return (
-    <div>
-      <h1>{fullname}</h1>
-      <h2>Bài viết được viết tại {process.env.HOST}</h2>
-    </div>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;

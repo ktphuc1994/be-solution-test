@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const CompressionPlugin = require('compression-webpack-plugin')
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const ESLintPlugin = require('eslint-webpack-plugin')
-const Dotenv = require('dotenv-webpack')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-const webpack = require('webpack')
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const webpack = require('webpack');
 
 // Cái dòng này giúp Editor gợi ý được các giá trị cho dòng code config ngay phía dưới nó
 // (giống như đang dùng Typescript vậy đó 😉)
 /** @type {(env: any, arg: {mode: string}) => import('webpack').Configuration} **/
 module.exports = (env, argv) => {
-  const isProduction = argv.mode === 'production'
-  const isAnalyze = Boolean(env?.analyze)
+  const isProduction = argv.mode === 'production';
+  const isAnalyze = Boolean(env?.analyze);
   /** @type {import('webpack').Configuration} **/
   const config = {
     // Quy định cách webpack giải quyết các file
@@ -29,7 +29,10 @@ module.exports = (env, argv) => {
         // để khi import cho ngắn gọn
         // Ví dụ: import Login from '@pages/Login'
         // Thay vì: import Login from '../pages/Login' chẳng hạn
-        '@pages': path.resolve(__dirname, './src/pages')
+        '@pages': path.resolve(__dirname, './src/pages'),
+        '@components': path.resolve(__dirname, './src/components'),
+        '~@types': path.resolve(__dirname, './src/types'),
+        '@services': path.resolve(__dirname, './src/services')
       }
     },
     // File đầu vào cho webpack, file này thường là file import mọi file khác
@@ -112,7 +115,7 @@ module.exports = (env, argv) => {
             from: 'public',
             to: '.',
             filter: (name) => {
-              return !name.endsWith('index.html')
+              return !name.endsWith('index.html');
             }
           }
         ]
@@ -128,7 +131,7 @@ module.exports = (env, argv) => {
         extensions: ['.tsx', '.ts', '.js', '.jsx']
       })
     ]
-  }
+  };
 
   //🚀 Nếu build thì sẽ thêm một số config
   if (isProduction) {
@@ -141,16 +144,16 @@ module.exports = (env, argv) => {
         algorithm: 'brotliCompress'
       }),
       new CleanWebpackPlugin() // Dọn dẹp thư mục build trước đó để chuẩn bị cho bản build hiện tại
-    ]
+    ];
     if (isAnalyze) {
-      config.plugins = [...config.plugins, new BundleAnalyzerPlugin()]
+      config.plugins = [...config.plugins, new BundleAnalyzerPlugin()];
     }
     config.optimization = {
       minimizer: [
         `...`, // Cú pháp kế thừa bộ minimizers mặc định trong webpack 5 (i.e. `terser-webpack-plugin`)
         new CssMinimizerPlugin() // minify css
       ]
-    }
+    };
   }
-  return config
-}
+  return config;
+};
