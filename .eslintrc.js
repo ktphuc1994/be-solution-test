@@ -1,23 +1,29 @@
-const path = require('path')
+const path = require('path');
 module.exports = {
-  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'react-app', 'prettier'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'react-app',
+    'eslint-config-prettier',
+    'prettier'
+  ],
   plugins: ['prettier'],
-  setting: {
-    react: {
-      // Nói eslint-plugin-react tự động biết version của React.
-      version: 'detect'
-    },
-    // Nói ESLint cách xử lý các import
-    'import/resolver': {
-      node: {
-        paths: [path.resolve(__dirname)],
-        extensions: ['.js', '.jsx', '.ts', '.tsx']
-      },
-      typescript: {
-        project: path.resolve(__dirname, './tsconfig.json')
-      }
-    }
-  },
+  // setting: {
+  //   react: {
+  //     // Nói eslint-plugin-react tự động biết version của React.
+  //     version: 'detect'
+  //   },
+  //   // Nói ESLint cách xử lý các import
+  //   'import/resolver': {
+  //     node: {
+  //       paths: [path.resolve(__dirname)],
+  //       extensions: ['.js', '.jsx', '.ts', '.tsx']
+  //     },
+  //     typescript: {
+  //       project: path.resolve(__dirname, './tsconfig.json')
+  //     }
+  //   }
+  // },
   env: {
     node: true
   },
@@ -31,7 +37,7 @@ module.exports = {
       'warn',
       {
         arrowParens: 'always',
-        semi: false,
+        semi: true,
         trailingComma: 'none',
         tabWidth: 2,
         endOfLine: 'auto',
@@ -42,4 +48,4 @@ module.exports = {
       }
     ]
   }
-}
+};
