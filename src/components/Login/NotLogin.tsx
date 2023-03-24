@@ -49,6 +49,7 @@ const NotLogin = ({ setLoading }: InterfaceNotLoginComponent) => {
     try {
       const token = await userServ.login({ email, password });
       localServ.setToken(token);
+      toast.success('Login successfully!!');
       queryClient.invalidateQueries({ queryKey: ['user'] });
       navigate('/');
     } catch (err) {
