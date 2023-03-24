@@ -1,0 +1,189 @@
+import { useMemo, useRef, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+
+// import local library
+import { toast } from 'react-toastify';
+
+// import types and interfaces
+import { InterfaceUserTableComponents } from '~@types/components/comps-userList';
+import { InterfaceUser } from '~@types/models/user';
+
+// import local services
+import userServ from '@services/userServ';
+
+// import local constants
+import { defaultUser } from '@constants/default.const';
+
+// import local utils
+import { axiosErrorHandling } from '../../utils';
+
+// import local components
+import InnerSpinner from '../Spinner/InnerSpinner';
+import ConfirmModal from '../Modal/ConfirmModal';
+
+// import MUI components
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import MuiTable from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TablePagination from '@mui/material/TablePagination';
+import IconButton from '@mui/material/IconButton';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+
+const Table = ({ filterValue }: InterfaceUserTableComponents) => {
+  const queryClient = useQueryClient();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [modalOpen, setModalOpen] = useState(false);
+  const userRef = useRef<InterfaceUser>(defaultUser);
+
+  const { data: userList } = useQuery({ queryKey: ['user-list'], queryFn: userServ.getUserList });
+  const filterUserList = useMemo(() => {
+    if (!userList) return null;
+    return userList
+      .filter((user) => {
+        const isAgePassed = filterValue.ageLimit
+          ? filterValue.ageLimit.max >= +user.age && filterValue.ageLimit.min <= +user.age
+          : true;
+        return (
+          filterValue.idReg.test(user.id) &&
+          filterValue.fullNameReg.test(user.fullName) &&
+          isAgePassed
+        );
+      })
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  }, [userList, filterValue, page, rowsPerPage]);
+
+  if (!userList)
+    return (
+      <Box component='div' sx={{ flexGrow: 1, position: 'relative' }}>
+        <InnerSpinner color='error' size='3rem' thickness={4} disableAbsolute={false} />
+      </Box>
+    );
+
+  // TABLE Context Handling
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - userList.length) : 0;
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleEditClick = (userInfo: InterfaceUser) => () => {
+    userRef.current = userInfo;
+  };
+
+  const handleDeleteClick = (userInfo: InterfaceUser) => () => {
+    userRef.current = userInfo;
+    setModalOpen(true);
+  };
+
+  // MODAL handling
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  // User API Handling
+  const handleDeleteUser = async () => {
+    try {
+      await userServ.deleteUser(userRef.current.id);
+      toast.success('Delete user successfully.');
+      queryClient.invalidateQueries(['user-list']);
+    } catch (err) {
+      axiosErrorHandling(err);
+    }
+  };
+
+  return (
+    <Box component='div' sx={{ flexGrow: 1 }}>
+      <TableContainer component={Paper}>
+        <MuiTable sx={{ minWidth: 650 }} aria-label='simple table' size='small'>
+          <TableHead sx={{ bgcolor: 'whitesmoke' }}>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Full Name</TableCell>
+              <TableCell align='right'>Age</TableCell>
+              <TableCell align='center'></TableCell>
+            </TableRow>
+          </TableHead>
+          {!filterUserList || filterUserList.length === 0 ? (
+            <Box>Empty</Box>
+          ) : (
+            <TableBody>
+              {filterUserList.map((user, index) => (
+                <TableRow
+                  key={user.id + index}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  hover
+                >
+                  <TableCell component='th' scope='row'>
+                    {user.id}
+                  </TableCell>
+                  <TableCell>{user.fullName}</TableCell>
+                  <TableCell align='right'>{user.age}</TableCell>
+                  <TableCell align='center'>
+                    <Box
+                      component='div'
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <IconButton color='warning' onClick={handleEditClick(user)}>
+                        <BorderColorIcon />
+                      </IconButton>
+                      <IconButton color='error' onClick={handleDeleteClick(user)}>
+                        <DeleteOutlineIcon />
+                      </IconButton>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {emptyRows > 0 && (
+                <TableRow
+                  style={{
+                    height: 53 * emptyRows
+                  }}
+                >
+                  <TableCell colSpan={4} />
+                </TableRow>
+              )}
+            </TableBody>
+          )}
+        </MuiTable>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10]}
+        component='div'
+        count={userList.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <ConfirmModal
+        open={modalOpen}
+        handleClose={handleCloseModal}
+        handleConfirm={handleDeleteUser}
+        confirmContent={
+          <span>
+            Are you sure to delete{' '}
+            <span style={{ fontWeight: 600 }}>{userRef.current.fullName}</span>?
+          </span>
+        }
+      />
+    </Box>
+  );
+};
+
+export default Table;

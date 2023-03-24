@@ -21,7 +21,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 const UserNav = memo(() => {
   const queryClient = useQueryClient();
   const { data: user } = useQuery({ queryKey: ['user'], queryFn: userServ.getUserInfo });
-  console.log(user);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: MouseEvent<HTMLElement>) => {

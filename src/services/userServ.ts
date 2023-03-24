@@ -1,4 +1,6 @@
-import { InterfaceLoginInfo } from '../types/models/user';
+import { AXIOS_GENERATOR } from '../config/axiosConfig';
+import urlConst from '../constants/urlConst';
+import { InterfaceLoginInfo, InterfaceUserInfo, InterfaceUser } from '../types/models/user';
 import localServ from './localServ';
 
 const userServ = {
@@ -16,6 +18,22 @@ const userServ = {
       }
       reject('Unauthorized. Please login to continue');
     });
+    return data;
+  },
+  getUserList: async (): Promise<InterfaceUser[]> => {
+    const { data } = await AXIOS_GENERATOR(urlConst.user).get('/');
+    return data;
+  },
+  createUser: async (userInfo: InterfaceUserInfo) => {
+    const { data } = await AXIOS_GENERATOR(urlConst.user).post('/', userInfo);
+    return data;
+  },
+  updateUser: async (updateInfo: InterfaceUser) => {
+    const { data } = await AXIOS_GENERATOR(urlConst.user).put('/' + updateInfo.id, updateInfo);
+    return data;
+  },
+  deleteUser: async (id: string) => {
+    const { data } = await AXIOS_GENERATOR(urlConst.user).delete('/' + id);
     return data;
   }
 };

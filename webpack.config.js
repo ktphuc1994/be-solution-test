@@ -31,6 +31,7 @@ module.exports = (env, argv) => {
         // Thay vì: import Login from '../pages/Login' chẳng hạn
         '@pages': path.resolve(__dirname, './src/pages'),
         '@components': path.resolve(__dirname, './src/components'),
+        '@constants': path.resolve(__dirname, './src/constants'),
         '~@types': path.resolve(__dirname, './src/types'),
         '@services': path.resolve(__dirname, './src/services')
       }
@@ -65,7 +66,9 @@ module.exports = (env, argv) => {
             {
               loader: 'file-loader',
               options: {
-                name: isProduction ? 'static/media/[name].[contenthash:6].[ext]' : '[path][name].[ext]'
+                name: isProduction
+                  ? 'static/media/[name].[contenthash:6].[ext]'
+                  : '[path][name].[ext]'
               }
             }
           ]
