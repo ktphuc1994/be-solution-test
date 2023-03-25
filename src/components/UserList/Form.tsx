@@ -1,8 +1,19 @@
 import { memo, forwardRef, FormEvent, useRef, ReactElement, Ref, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+
+// import local library
+import { toast } from 'react-toastify';
+
+// imoprt local services
+import userServ from '@services/userServ';
 
 // import local types and interfaces
 import moment, { Moment } from 'moment';
 import { InterfaceUserFormComponents } from '~@types/components/comps-userList';
+import { InterfaceUser, InterfaceUserInfo } from '~@types/models/user';
+
+// import local utils
+import { axiosErrorHandling } from '../../utils';
 
 // import MUI components
 import Box from '@mui/material/Box';
@@ -31,18 +42,23 @@ const now = moment();
 
 const UserForm = memo(({ open, setOpen, userInfo }: InterfaceUserFormComponents) => {
   const defaultDate = moment(now);
+  const queryClient = useQueryClient();
   const [birthday, setBirthday] = useState<Moment | null>(null);
   const [bdInputErr, setBdInputErr] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
   const fullNameRef = useRef<HTMLInputElement | null>(null);
 
   const isUpdate = Boolean(userInfo.id);
   const titleText = isUpdate ? 'Update' : 'Create';
-  const age = birthday?.isValid()
+  const age = bdInputErr
+    ? null
+    : birthday?.isValid()
     ? defaultDate.diff(birthday, 'years')
     : userInfo.age
     ? userInfo.age
     : null;
 
+  // Handle MODAL CONTEXT
   const handleClose = () => {
     setBirthday(null);
     setBdInputErr(false);
@@ -51,21 +67,40 @@ const UserForm = memo(({ open, setOpen, userInfo }: InterfaceUserFormComponents)
 
   const handleDatePick = (newDate: Moment | null) => {
     if (newDate?.isValid()) {
-      bdInputErr && setBdInputErr(false);
+      setBdInputErr(false);
+      setBirthday(newDate);
     } else {
       setBdInputErr(true);
     }
-    setBirthday(newDate);
   };
 
-  // handle create and update user
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  // Handle create and update user
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (bdInputErr || !birthday?.isValid()) {
+    if (age === null) {
       setBdInputErr(true);
       return;
     }
-    console.log('Is Birthday Valid: ', birthday?.isValid());
+    if (!fullNameRef.current) return;
+
+    setButtonLoading(true);
+    const method = isUpdate ? 'updateUser' : 'createUser';
+    const userData = { fullName: fullNameRef.current.value, age } as InterfaceUserInfo &
+      InterfaceUser;
+    if (isUpdate) {
+      userData.id = userInfo.id;
+    }
+
+    try {
+      await userServ[method](userData);
+      toast.success(`${titleText}d user successfully!`);
+      queryClient.invalidateQueries(['user-list']);
+      handleClose();
+    } catch (err) {
+      axiosErrorHandling(err);
+    } finally {
+      setButtonLoading(false);
+    }
   };
 
   return (
@@ -106,20 +141,26 @@ const UserForm = memo(({ open, setOpen, userInfo }: InterfaceUserFormComponents)
                 name: 'birthday',
                 error: bdInputErr,
                 helperText: bdInputErr ? 'Please select a valid date' : null
-              }
+              },
+              popper: { placement: 'auto' }
             }}
           />
         </Box>
         <Typography component='p' sx={{ mt: 1, ml: 0.5, fontSize: '0.8rem' }}>
-          {age ? `Age: ${age}` : null}
+          {age !== null ? `Age: ${age}` : null}
         </Typography>
       </DialogContent>
       <DialogActions sx={{ px: '1.5rem', py: '1rem' }}>
         <Button onClick={handleClose} variant='outlined'>
           Cancel
         </Button>
-        <Button variant='contained' form='user-form' type='submit'>
-          {titleText}
+        <Button
+          disabled={buttonLoading ? true : false}
+          variant='contained'
+          form='user-form'
+          type='submit'
+        >
+          {buttonLoading ? 'Loading...' : titleText}
         </Button>
       </DialogActions>
     </Dialog>

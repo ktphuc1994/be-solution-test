@@ -35,8 +35,11 @@ const UserList = () => {
 
   return (
     <Box component='div' sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Box component='div' sx={{ px: '1rem', display: 'flex', justifyContent: 'space-between' }}>
-        <Typography component='h2' sx={{ fontSize: '1.5rem', fontWeight: 700 }}>
+      <Box
+        component='div'
+        sx={{ px: '1rem', mb: 1, display: 'flex', justifyContent: 'space-between' }}
+      >
+        <Typography component='h2' sx={{ fontSize: '1.8rem', fontWeight: 700 }}>
           User List
         </Typography>
         <Button variant='contained' onClick={handleCreateClick}>

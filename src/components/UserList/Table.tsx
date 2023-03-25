@@ -116,11 +116,13 @@ const Table = memo(
                   <TableCell align='center'></TableCell>
                 </TableRow>
               </TableHead>
-              {!filterUserList || filterUserList.length === 0 ? (
-                <Box>Empty</Box>
-              ) : (
-                <TableBody>
-                  {filterUserList
+              <TableBody>
+                {!filterUserList || filterUserList.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={4}>Empty Row</TableCell>
+                  </TableRow>
+                ) : (
+                  filterUserList
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((user, index) => (
                       <TableRow
@@ -128,7 +130,7 @@ const Table = memo(
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         hover
                       >
-                        <TableCell component='th' scope='row'>
+                        <TableCell component='th' scope='row' sx={{ fontWeight: 600 }}>
                           {user.id}
                         </TableCell>
                         <TableCell>{user.fullName}</TableCell>
@@ -151,18 +153,18 @@ const Table = memo(
                           </Box>
                         </TableCell>
                       </TableRow>
-                    ))}
-                  {emptyRows > 0 && (
-                    <TableRow
-                      style={{
-                        height: 53 * emptyRows
-                      }}
-                    >
-                      <TableCell colSpan={4} />
-                    </TableRow>
-                  )}
-                </TableBody>
-              )}
+                    ))
+                )}
+                {emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: 53 * emptyRows
+                    }}
+                  >
+                    <TableCell colSpan={4} />
+                  </TableRow>
+                )}
+              </TableBody>
             </MuiTable>
           </TableContainer>
           <TablePagination
