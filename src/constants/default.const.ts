@@ -21,3 +21,15 @@ export const ageRange: InterfaceAgeRange = {
   range6: { min: 81, max: 100 },
   range7: { min: 101, max: Infinity }
 };
+
+export const validateRegEx = {
+  email: {
+    regex: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+    message: 'Please use a valid email address.'
+  },
+  password: {
+    regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    message:
+      'Minimum 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character.'
+  }
+};

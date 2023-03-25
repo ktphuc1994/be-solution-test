@@ -24,7 +24,13 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       staleTime: 1000 * 60 * 60,
-      cacheTime: 1000 * 60 * 60
+      cacheTime: 1000 * 60 * 60,
+      retry: (failureCount, error) => {
+        if (typeof error === 'string' && error === 'Unauthorized. Please login to continue')
+          return false;
+        if (failureCount === 3) return false;
+        return true;
+      }
     }
   }
 });

@@ -7,7 +7,7 @@ import userServ from '@services/userServ';
 // import local components
 import NotLogin from '@components/Login/NotLogin';
 import AlreadyLogin from '@components/Login/AlreadyLogin';
-import { ScreenSpinner } from '@components/Spinner/ScreenSpinner';
+import ScreenSpinner from '@components/Spinner/ScreenSpinner';
 import InnerSpinner from '@components/Spinner/InnerSpinner';
 
 // import MUI Components
@@ -35,15 +35,14 @@ const LoginPage = () => {
       {isLoading ? <ScreenSpinner bg='rgba(0, 0, 0, 0.4)' /> : null}
       <Box
         sx={{
-          backgroundColor: 'rgba(0, 0, 0, 0.4)',
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
           backdropFilter: 'blur(7px)',
           borderRadius: '12px',
           margin: '0.5rem',
           padding: '2rem',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          color: 'white'
+          alignItems: 'center'
         }}
       >
         <Box

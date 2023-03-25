@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 
-export const ScreenSpinner = ({ bg = 'transparent' }: { bg?: string }) => {
+const ScreenSpinner = ({ bg = 'transparent' }: { bg?: string }) => {
   return (
     <Box
       sx={{
@@ -21,3 +21,4 @@ export const ScreenSpinner = ({ bg = 'transparent' }: { bg?: string }) => {
     </Box>
   );
 };
+export default ScreenSpinner;

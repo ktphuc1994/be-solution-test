@@ -1,4 +1,4 @@
-import { FormEvent, MouseEvent, useState } from 'react';
+import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -12,17 +12,17 @@ import { toast } from 'react-toastify';
 // import types and interfaces
 import { InterfaceNotLoginComponent } from '~@types/components/comps-login';
 
+// import constants
+import { validateRegEx } from '@constants/default.const';
+
 // import local components
-import StyledTextField, { inputStyle } from '../Styled/StyledTextField';
+import StyledTextField from '../Styled/StyledTextField';
 
 // import MUI components
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-import FormControl from '@mui/material/FormControl';
 import Button from '@mui/material/Button';
 import LockPerson from '@mui/icons-material/LockPerson';
 import Visibility from '@mui/icons-material/Visibility';
@@ -31,21 +31,56 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 const NotLogin = ({ setLoading }: InterfaceNotLoginComponent) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [emailInputErr, setEmailInputErr] = useState(false);
+  const [passInputErr, setPassInputErr] = useState(false);
+  const dbEmailRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const dbPassRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const handleInputEmail = (e: ChangeEvent<HTMLInputElement>) => {
+    clearTimeout(dbEmailRef.current);
+    dbEmailRef.current = setTimeout(() => {
+      const value = e.target.value;
+      const isValid = validateRegEx.email.regex.test(value);
+      console.log({ isValid });
+      if (!isValid) {
+        setEmailInputErr(true);
+        return;
+      }
+      setEmailInputErr(false);
+      setEmail(value);
+    }, 300);
+  };
+  const handleInputPass = (e: ChangeEvent<HTMLInputElement>) => {
+    clearTimeout(dbPassRef.current);
+    dbPassRef.current = setTimeout(() => {
+      const value = e.target.value;
+      console.log(value);
+      const isValid = validateRegEx.password.regex.test(value);
+      if (!isValid) {
+        setPassInputErr(true);
+        return;
+      }
+      setPassInputErr(false);
+      setPassword(value);
+    }, 300);
+  };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
-  const handleSummit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const handleLogin = async () => {
     setLoading(true);
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
+    if (emailInputErr || passInputErr || !email || !password) {
+      setEmailInputErr(true);
+      setPassInputErr(true);
+      setLoading(false);
+      return;
+    }
     try {
       const token = await userServ.login({ email, password });
       localServ.setToken(token);
@@ -70,50 +105,49 @@ const NotLogin = ({ setLoading }: InterfaceNotLoginComponent) => {
       <Typography component='h1' variant='h4'>
         Login In
       </Typography>
-      <Box component='form' onSubmit={handleSummit}>
+      <Box component='form' sx={{ maxWidth: '500px' }}>
         <StyledTextField
           margin='normal'
-          required
           fullWidth
+          autoFocus
           id='email'
           label='Email Address'
           name='email'
           type='email'
-          defaultValue=''
           autoComplete='email'
-          autoFocus
+          error={emailInputErr}
+          helperText={emailInputErr ? validateRegEx.email.message : null}
+          onChange={handleInputEmail}
           sx={{ mb: '1rem' }}
         />
-        <FormControl sx={{ ...inputStyle, width: '100%' }} variant='outlined' required>
-          <InputLabel htmlFor='outlined-adornment-password'>Password</InputLabel>
-          <OutlinedInput
-            id='outlined-adornment-password'
-            type={showPassword ? 'text' : 'password'}
-            endAdornment={
+        <StyledTextField
+          margin='normal'
+          required
+          fullWidth
+          id='password-input'
+          label='Password'
+          name='password'
+          type={showPassword ? 'text' : 'password'}
+          autoComplete='current-password'
+          error={passInputErr}
+          helperText={passInputErr ? validateRegEx.password.message : null}
+          onChange={handleInputPass}
+          InputProps={{
+            endAdornment: (
               <InputAdornment position='end'>
                 <IconButton
                   aria-label='toggle password visibility'
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
                   edge='end'
-                  sx={{
-                    color: 'white',
-                    '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.05)'
-                    }
-                  }}
                 >
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
-            }
-            label='Password'
-            name='password'
-            defaultValue=''
-            autoComplete='password'
-          />
-        </FormControl>
-        <Button type='submit' fullWidth variant='contained' sx={{ mt: '1.5rem' }}>
+            )
+          }}
+        />
+        <Button fullWidth variant='contained' sx={{ mt: '1.5rem' }} onClick={handleLogin}>
           Log In
         </Button>
       </Box>

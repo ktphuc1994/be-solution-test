@@ -21,6 +21,7 @@ import ConfirmModal from '../Modal/ConfirmModal';
 // import MUI components
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import MuiTable from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -57,7 +58,7 @@ const Table = memo(
       });
     }, [userList, filterValue]);
 
-    if (!userList)
+    if (!userList || !filterUserList)
       return (
         <Box component='div' sx={{ flexGrow: 1, position: 'relative' }}>
           <InnerSpinner color='error' size='3rem' thickness={4} disableAbsolute={false} />
@@ -117,9 +118,23 @@ const Table = memo(
                 </TableRow>
               </TableHead>
               <TableBody>
-                {!filterUserList || filterUserList.length === 0 ? (
+                {filterUserList.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4}>Empty Row</TableCell>
+                    <TableCell
+                      colSpan={4}
+                      sx={{
+                        height: 400,
+                        textAlign: 'center'
+                      }}
+                    >
+                      <img
+                        src='https://act.hoyolab.com/app/community-game-records-sea/images/empty@2x.4bb1eff6.png'
+                        style={{ maxWidth: '200px' }}
+                      />
+                      <Typography sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'lightgray' }}>
+                        No user found
+                      </Typography>
+                    </TableCell>
                   </TableRow>
                 ) : (
                   filterUserList
@@ -170,7 +185,7 @@ const Table = memo(
           <TablePagination
             rowsPerPageOptions={[5, 10]}
             component='div'
-            count={userList.length}
+            count={filterUserList.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

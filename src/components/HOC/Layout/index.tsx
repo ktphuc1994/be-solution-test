@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 
 /* import react router dom packages */
 import { Outlet, useLocation } from 'react-router-dom';
 
 // import local components
-// import InnerSpinner from '../../Spinner/InnerSpinner';
+import InnerSpinner from '@components/Spinner/InnerSpinner';
+import ScreenSpinner from '@components/Spinner/ScreenSpinner';
 
 // import MUI components
 import Box from '@mui/material/Box';
@@ -17,7 +18,11 @@ const Layout = () => {
   const [sideOpen, setSideOpen] = useState(false);
 
   if (location.pathname === '/login') {
-    return <Outlet />;
+    return (
+      <Suspense fallback={<ScreenSpinner />}>
+        <Outlet />
+      </Suspense>
+    );
   }
 
   return (
@@ -37,7 +42,9 @@ const Layout = () => {
       >
         <Header sideOpen={sideOpen} setSideOpen={setSideOpen} />
         <Box component='div' sx={{ flexGrow: 1 }}>
-          <Outlet />
+          <Suspense fallback={<InnerSpinner size='3rem' thickness={4} />}>
+            <Outlet />
+          </Suspense>
         </Box>
         <Footer />
       </Box>

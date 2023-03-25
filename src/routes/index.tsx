@@ -1,16 +1,19 @@
+import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 // import local components
-import PrivateRoutes from './PrivateRoutes';
 import Layout from '../components/HOC/Layout/';
-import LoginPage from '@pages/login';
-import HomePage from '@pages/index';
-import UserList from '@pages/userList';
+import UnknownErrorPage from '../components/Error/UnknownErrorPage';
+const LoginPage = lazy(() => import('@pages/login'));
+const PrivateRoutes = lazy(() => import('./PrivateRoutes'));
+const HomePage = lazy(() => import('@pages/index'));
+const UserList = lazy(() => import('@pages/userList'));
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
+    errorElement: <UnknownErrorPage />,
     children: [
       {
         path: 'login',
