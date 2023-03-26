@@ -57,7 +57,7 @@ const Header = memo(({ sideOpen, setSideOpen }: InterfaceHeader) => {
               color: 'primary.main'
             }}
           >
-            SOLUTION
+            SOLUTIONS
           </Typography>{' '}
           TEST
         </Link>
