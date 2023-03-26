@@ -18,7 +18,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-const SearchBar = memo(({ setFilterUser }: InterfaceSearchBarComponent) => {
+const SearchBar = memo(({ setFilterUser, setPage }: InterfaceSearchBarComponent) => {
   const idRef = useRef<HTMLInputElement | null>(null);
   const fullNameRef = useRef<HTMLInputElement | null>(null);
   const [ageState, setAgeState] = useState<string>('');
@@ -39,21 +39,23 @@ const SearchBar = memo(({ setFilterUser }: InterfaceSearchBarComponent) => {
       fullName: fullNameRef.current!.value,
       age: ageState
     });
+    setPage(0);
   };
   const handleReset = () => {
     idRef.current!.value = '';
     fullNameRef.current!.value = '';
     setAgeState('');
     setFilterUser(defaultFilterUser);
+    setPage(0);
   };
 
   return (
     <Box
-      component='div'
       sx={{
         display: 'flex',
-        alignItems: 'center',
-        mb: '1rem',
+        flexDirection: { xs: 'column', md: 'row' },
+        alignItems: { md: 'center' },
+        mb: '1.5rem',
         flexShrink: 0
       }}
     >
@@ -68,7 +70,7 @@ const SearchBar = memo(({ setFilterUser }: InterfaceSearchBarComponent) => {
         inputRef={idRef}
       />
       <TextField
-        sx={{ mx: 1 }}
+        sx={{ mx: { md: 1 }, my: 1 }}
         size='small'
         margin='none'
         id='fullName'
@@ -106,12 +108,18 @@ const SearchBar = memo(({ setFilterUser }: InterfaceSearchBarComponent) => {
           <MenuItem value='range7'>Above 100</MenuItem>
         </Select>
       </FormControl>
-      <Button variant='contained' onClick={handleFilter} sx={{ mx: '0.5rem' }}>
-        Filter
-      </Button>
-      <Button variant='outlined' onClick={handleReset}>
-        Reset
-      </Button>
+      <Box sx={{ my: 1, display: 'flex', alignItems: 'center' }}>
+        <Button
+          variant='contained'
+          onClick={handleFilter}
+          sx={{ ml: { ml: 1 }, mr: 1, width: '50%' }}
+        >
+          Filter
+        </Button>
+        <Button variant='outlined' onClick={handleReset} sx={{ width: '50%' }}>
+          Reset
+        </Button>
+      </Box>
     </Box>
   );
 });

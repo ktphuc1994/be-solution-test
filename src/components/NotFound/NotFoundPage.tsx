@@ -9,7 +9,6 @@ import Button from '@mui/material/Button';
 const NotFoundPage = () => {
   return (
     <Box
-      component='div'
       sx={{
         width: '100%',
         height: '100%',

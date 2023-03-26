@@ -120,7 +120,7 @@ const Sidebar = memo(({ sideOpen, setSideOpen }: InterfaceSidebar) => {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <SidebarContent open={sideOpen} />
+        <SidebarContent open={sideOpen} setOpen={setSideOpen} />
       </MuiDrawer>
     </Box>
   );

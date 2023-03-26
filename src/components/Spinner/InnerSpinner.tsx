@@ -1,6 +1,9 @@
+// import types and interfaces
+import { InterfaceInnerSpinner } from '~@types/components/comps-spinner';
+
+// import MUI components
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
-import { InterfaceInnerSpinner } from '../../types/components/comps-spinner';
 
 const absoluteSetting = {
   position: 'absolute',

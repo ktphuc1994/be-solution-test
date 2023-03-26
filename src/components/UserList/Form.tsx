@@ -55,7 +55,7 @@ const UserForm = memo(({ open, setOpen, userInfo }: InterfaceUserFormComponents)
     ? userInfo.age
     : null;
 
-  // Handle MODAL CONTEXT
+  // FORM Control
   const handleClose = () => {
     setBirthday(null);
     setBdInputErr(false);
@@ -150,7 +150,7 @@ const UserForm = memo(({ open, setOpen, userInfo }: InterfaceUserFormComponents)
             }}
           />
         </Box>
-        <Typography component='p' sx={{ mt: 1, ml: 0.5, fontSize: '0.8rem' }}>
+        <Typography component='p' sx={{ mt: 1, ml: 0.5, fontSize: '0.9rem' }}>
           {age !== null ? `Age: ${age}` : null}
         </Typography>
       </DialogContent>

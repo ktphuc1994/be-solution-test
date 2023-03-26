@@ -8,7 +8,7 @@ const AlreadyLogin = () => {
     <>
       <LockOpenIcon fontSize='large' sx={{ mb: '0.5rem' }} />
       <Typography component='h1' variant='h5' mb='0.5rem'>
-        You have already login. Let's get back to Home.
+        You have already logged in. Let's head back Home.
       </Typography>
       <Button fullWidth href='/' variant='contained' color='error'>
         Homepage

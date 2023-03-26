@@ -1,8 +1,9 @@
 import { memo, MouseEvent, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 // import local library
 import { toast } from 'react-toastify';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 // import local service
 import localServ from '@services/localServ';
@@ -10,25 +11,30 @@ import userServ from '@services/userServ';
 
 // import MUI components
 import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const UserNav = memo(() => {
-  const queryClient = useQueryClient();
-  const { data: user } = useQuery({ queryKey: ['user'], queryFn: userServ.getUserInfo });
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const queryClient = useQueryClient();
+  const { data: user } = useQuery({ queryKey: ['user'], queryFn: userServ.getUserInfo });
+
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+  const handleClose = (href?: string) => () => {
     setAnchorEl(null);
+    if (href) navigate(href);
   };
+
   const handleLogout = () => {
     localServ.removeToken();
     queryClient.resetQueries(['user']);
@@ -40,7 +46,7 @@ const UserNav = memo(() => {
   };
 
   return (
-    <Box component='div'>
+    <Box>
       {!user ? (
         <Button variant='contained' color='error' href='/login'>
           Login
@@ -51,6 +57,7 @@ const UserNav = memo(() => {
           aria-controls={open ? 'account-menu' : undefined}
           aria-haspopup='true'
           aria-expanded={open ? 'true' : undefined}
+          sx={{ fontSize: { xs: '0.8rem', sm: '1rem' } }}
           onClick={handleClick}
         >
           {user.email}
@@ -61,7 +68,7 @@ const UserNav = memo(() => {
         aria-labelledby='account-menu-button'
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={handleClose()}
         PaperProps={{
           elevation: 0,
           sx: {
@@ -78,8 +85,11 @@ const UserNav = memo(() => {
         transformOrigin={{ horizontal: 'left', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
+        <MenuItem onClick={handleClose('profile')}>
+          <ListItemIcon>
+            <AccountCircleIcon fontSize='small' />
+          </ListItemIcon>
+          Profile
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleLogout}>

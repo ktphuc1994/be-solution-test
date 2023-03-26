@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 // import MUI components
 import List from '@mui/material/List';
@@ -8,13 +8,14 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
 // import MUI Icons
-import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
+import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
+import { InterfaceSidebarContent } from '../../../../types/components/comps-layout';
 
 const itemList = [
   {
     name: 'Home',
-    icon: <DashboardCustomizeIcon />,
+    icon: <HomeIcon />,
     pathname: '/'
   },
   {
@@ -24,8 +25,7 @@ const itemList = [
   }
 ];
 
-const SidebarContent = ({ open }: { open: boolean }) => {
-  const navigate = useNavigate();
+const SidebarContent = ({ open, setOpen }: InterfaceSidebarContent) => {
   const location = useLocation();
 
   return (
@@ -33,6 +33,7 @@ const SidebarContent = ({ open }: { open: boolean }) => {
       {itemList.map((item) => (
         <ListItem key={item.name} disablePadding sx={{ display: 'block' }}>
           <ListItemButton
+            href={item.pathname}
             sx={{
               minHeight: 48,
               justifyContent: open ? 'initial' : 'center',
@@ -40,7 +41,7 @@ const SidebarContent = ({ open }: { open: boolean }) => {
             }}
             selected={item.pathname === location.pathname}
             onClick={() => {
-              navigate(item.pathname);
+              if (setOpen) setOpen(false);
             }}
           >
             <ListItemIcon

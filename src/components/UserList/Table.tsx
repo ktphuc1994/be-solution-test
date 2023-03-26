@@ -34,12 +34,11 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const Table = memo(
-  ({ filterValue, selectedUserRef, setFormOpen }: InterfaceUserTableComponents) => {
+  ({ filterValue, selectedUserRef, setFormOpen, page, setPage }: InterfaceUserTableComponents) => {
     const queryClient = useQueryClient();
-    const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    // form and modal
+    // MODAL control
     const [modalOpen, setModalOpen] = useState(false);
 
     // fetching user data
@@ -48,7 +47,7 @@ const Table = memo(
       if (!userList) return null;
       return userList.filter((user) => {
         const isAgePassed = filterValue.ageLimit
-          ? filterValue.ageLimit.max >= +user.age && filterValue.ageLimit.min <= +user.age
+          ? filterValue.ageLimit.max >= user.age && filterValue.ageLimit.min <= user.age
           : true;
         return (
           filterValue.idReg.test(user.id) &&
@@ -60,13 +59,13 @@ const Table = memo(
 
     if (!userList || !filterUserList)
       return (
-        <Box component='div' sx={{ flexGrow: 1, position: 'relative' }}>
+        <Box sx={{ flexGrow: 1, position: 'relative' }}>
           <InnerSpinner color='error' size='3rem' thickness={4} disableAbsolute={false} />
         </Box>
       );
 
     // TABLE Context Handling
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - userList.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filterUserList.length) : 0;
 
     const handleChangePage = (event: unknown, newPage: number) => {
       setPage(newPage);
@@ -106,9 +105,9 @@ const Table = memo(
 
     return (
       <>
-        <Box component='div' sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1 }}>
           <TableContainer component={Paper}>
-            <MuiTable sx={{ minWidth: 650 }} aria-label='simple table' size='small'>
+            <MuiTable sx={{ minWidth: 650 }} aria-label='user list table' size='small'>
               <TableHead sx={{ bgcolor: 'whitesmoke' }}>
                 <TableRow>
                   <TableCell>ID</TableCell>
@@ -153,7 +152,6 @@ const Table = memo(
                         <TableCell align='right'>{user.age}</TableCell>
                         <TableCell align='center'>
                           <Box
-                            component='div'
                             sx={{
                               display: 'flex',
                               justifyContent: 'center',

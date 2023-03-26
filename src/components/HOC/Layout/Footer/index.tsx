@@ -11,7 +11,8 @@ const Footer = memo(() => {
         BE
         <Typography component='span' sx={{ fontWeight: 700, color: 'primary.main' }}>
           SOLUTION
-        </Typography>
+        </Typography>{' '}
+        TEST
         <Typography component='span' sx={{ fontWeight: 400 }}>
           . Designed and Coded by{' '}
         </Typography>

@@ -1,8 +1,5 @@
 import { memo } from 'react';
 
-// import local library
-import { Link } from 'react-router-dom';
-
 // import type and interface
 import { InterfaceHeader } from '~@types/components/comps-layout';
 
@@ -14,6 +11,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import Link from '@mui/material/Link';
 
 const Header = memo(({ sideOpen, setSideOpen }: InterfaceHeader) => {
   return (
@@ -27,7 +25,7 @@ const Header = memo(({ sideOpen, setSideOpen }: InterfaceHeader) => {
         mx: { xs: '-1rem', md: 0 }
       }}
     >
-      <Box component='div' sx={{ display: 'flex', alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
         {sideOpen ? null : (
           <IconButton
             onClick={() => {
@@ -42,11 +40,11 @@ const Header = memo(({ sideOpen, setSideOpen }: InterfaceHeader) => {
           </IconButton>
         )}
         <Link
-          to='/'
-          style={{
+          href='/'
+          sx={{
             textDecoration: 'none',
             color: 'black',
-            fontSize: '1.8rem',
+            fontSize: { xs: '1.3rem', sm: '1.5rem', md: '1.8rem' },
             fontWeight: 700
           }}
         >
@@ -60,10 +58,11 @@ const Header = memo(({ sideOpen, setSideOpen }: InterfaceHeader) => {
             }}
           >
             SOLUTION
-          </Typography>
+          </Typography>{' '}
+          TEST
         </Link>
       </Box>
-      <Box component='div'>
+      <Box>
         <UserNav />
       </Box>
     </Box>

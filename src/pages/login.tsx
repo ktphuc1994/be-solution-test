@@ -35,7 +35,7 @@ const LoginPage = () => {
       {isLoading ? <ScreenSpinner bg='rgba(0, 0, 0, 0.4)' /> : null}
       <Box
         sx={{
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          backgroundColor: 'rgba(255, 255, 255, 0.7)',
           backdropFilter: 'blur(7px)',
           borderRadius: '12px',
           margin: '0.5rem',
@@ -46,7 +46,6 @@ const LoginPage = () => {
         }}
       >
         <Box
-          component='div'
           sx={{
             display: `${loading ? 'block' : 'none'}`,
             position: 'absolute',

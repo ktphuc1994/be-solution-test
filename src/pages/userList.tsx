@@ -17,6 +17,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 const UserList = () => {
+  const [page, setPage] = useState(0);
   const [formOpen, setFormOpen] = useState(false);
   const [filterUser, setFilterUser] = useState<InterfaceFilterUser>(defaultFilterUser);
   const selectedUserRef = useRef<InterfaceUser>(defaultUser);
@@ -37,7 +38,7 @@ const UserList = () => {
     <Box component='div' sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Box
         component='div'
-        sx={{ px: '1rem', mb: 1, display: 'flex', justifyContent: 'space-between' }}
+        sx={{ px: { sm: '1rem' }, mb: 2, display: 'flex', justifyContent: 'space-between' }}
       >
         <Typography component='h2' sx={{ fontSize: '1.8rem', fontWeight: 700 }}>
           User List
@@ -46,11 +47,13 @@ const UserList = () => {
           Create User
         </Button>
       </Box>
-      <SearchBar setFilterUser={setFilterUser} />
+      <SearchBar setFilterUser={setFilterUser} setPage={setPage} />
       <Table
         filterValue={filterValue}
         selectedUserRef={selectedUserRef}
         setFormOpen={setFormOpen}
+        page={page}
+        setPage={setPage}
       />
       <UserForm open={formOpen} setOpen={setFormOpen} userInfo={selectedUserRef.current} />
     </Box>
