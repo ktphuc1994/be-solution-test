@@ -129,7 +129,8 @@ const Table = memo(
                     >
                       <img
                         src='https://act.hoyolab.com/app/community-game-records-sea/images/empty@2x.4bb1eff6.png'
-                        style={{ maxWidth: '200px' }}
+                        alt='no-user-found'
+                        style={{ maxWidth: '50%' }}
                       />
                       <Typography sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'lightgray' }}>
                         No user found

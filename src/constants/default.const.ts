@@ -9,7 +9,8 @@ export const defaultFilterUser: InterfaceFilterUser = {
 export const defaultUser: InterfaceUser = {
   id: '',
   fullName: '',
-  age: 0
+  age: 0,
+  birthday: ''
 };
 
 export const ageRange: InterfaceAgeRange = {

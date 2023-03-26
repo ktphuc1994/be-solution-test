@@ -38,10 +38,7 @@ const Transition = forwardRef(function Transition(
   return <Slide direction='up' ref={ref} {...props} />;
 });
 
-const now = moment();
-
 const UserForm = memo(({ open, setOpen, userInfo }: InterfaceUserFormComponents) => {
-  const defaultDate = moment(now);
   const queryClient = useQueryClient();
   const [birthday, setBirthday] = useState<Moment | null>(null);
   const [bdInputErr, setBdInputErr] = useState(false);
@@ -53,7 +50,7 @@ const UserForm = memo(({ open, setOpen, userInfo }: InterfaceUserFormComponents)
   const age = bdInputErr
     ? null
     : birthday?.isValid()
-    ? defaultDate.diff(birthday, 'years')
+    ? moment().diff(birthday, 'years')
     : userInfo.age
     ? userInfo.age
     : null;
@@ -85,8 +82,11 @@ const UserForm = memo(({ open, setOpen, userInfo }: InterfaceUserFormComponents)
 
     setButtonLoading(true);
     const method = isUpdate ? 'updateUser' : 'createUser';
-    const userData = { fullName: fullNameRef.current.value, age } as InterfaceUserInfo &
-      InterfaceUser;
+    const userData = {
+      fullName: fullNameRef.current.value,
+      age,
+      birthday: birthday ? birthday.format('YYYY-MM-DD') : userInfo.birthday
+    } as InterfaceUserInfo & InterfaceUser;
     if (isUpdate) {
       userData.id = userInfo.id;
     }
@@ -107,7 +107,10 @@ const UserForm = memo(({ open, setOpen, userInfo }: InterfaceUserFormComponents)
     <Dialog
       open={open}
       TransitionComponent={Transition}
-      onClose={handleClose}
+      onClose={(_, reason) => {
+        if (reason === 'backdropClick') return;
+        handleClose();
+      }}
       aria-describedby='user-form-create-update'
     >
       <DialogTitle>{titleText} User</DialogTitle>
@@ -133,10 +136,11 @@ const UserForm = memo(({ open, setOpen, userInfo }: InterfaceUserFormComponents)
           <DatePicker
             label='Birthday'
             format='DD/MM/YYYY'
-            defaultValue={userInfo.age ? defaultDate.subtract(userInfo.age, 'years') : undefined}
+            defaultValue={userInfo.birthday ? moment(userInfo.birthday) : undefined}
             onChange={handleDatePick}
             slotProps={{
               textField: {
+                required: true,
                 fullWidth: true,
                 name: 'birthday',
                 error: bdInputErr,

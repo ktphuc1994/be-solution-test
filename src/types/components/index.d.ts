@@ -8,7 +8,7 @@ export interface InterfaceBaseProps {
 export interface InterfaceComfirmModalComponent extends InterfaceBaseProps {
   open: boolean;
   handleClose: () => void;
-  handleConfirm: () => void;
+  handleConfirm: (() => void) | (() => Promise<void>);
   title?: string;
   confirmContent: ReactNode;
 }

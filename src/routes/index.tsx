@@ -4,6 +4,7 @@ import { createBrowserRouter } from 'react-router-dom';
 // import local components
 import Layout from '../components/HOC/Layout/';
 import UnknownErrorPage from '../components/Error/UnknownErrorPage';
+import NotFoundPage from '../components/NotFound/NotFoundPage';
 const LoginPage = lazy(() => import('@pages/login'));
 const PrivateRoutes = lazy(() => import('./PrivateRoutes'));
 const HomePage = lazy(() => import('@pages/index'));
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
             element: <UserList />
           }
         ]
+      },
+      {
+        path: '*',
+        element: <NotFoundPage />
       }
     ]
   }

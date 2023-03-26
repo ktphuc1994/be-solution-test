@@ -8,6 +8,7 @@ export interface InterfaceLoginInfo {
 export interface InterfaceUserInfo {
   fullName: string;
   age: number;
+  birthday: string;
 }
 
 export interface InterfaceUser extends InterfaceUserInfo {
