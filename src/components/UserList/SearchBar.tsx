@@ -31,6 +31,7 @@ const SearchBar = memo(({ setFilterUser, setPage }: InterfaceSearchBarComponent)
   const handleChangeAge = (e: SelectChangeEvent) => {
     setAgeState(e.target.value);
     setFilterUser((state) => ({ ...state, age: e.target.value }));
+    setPage(0);
   };
 
   const handleFilter = () => {
@@ -112,7 +113,7 @@ const SearchBar = memo(({ setFilterUser, setPage }: InterfaceSearchBarComponent)
         <Button
           variant='contained'
           onClick={handleFilter}
-          sx={{ ml: { ml: 1 }, mr: 1, width: '50%' }}
+          sx={{ ml: { md: 1 }, mr: 1, width: '50%' }}
         >
           Filter
         </Button>
